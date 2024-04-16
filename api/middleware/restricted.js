@@ -1,8 +1,22 @@
+const jwt = require("jsonwebtoken");
+
+
 module.exports = (req, res, next) => {
+  const token = req.headers.authorization;
+  if (!token){
+    return res.status(401).json({message: 'token required'})
+  }
+  const secret = process.env.JWT_SECRET || 'secretKey123'
+  jwt.verify(token, secret, (err, decodedToken) => {
+    if (err) {
+      // the token is invalid or has expired
+      return res.status(401).json({ message: "token invalid" });
+    }
 
-
-  
-  next();
+    // the token is valid, save the decoded token to the request
+    req.decodedToken = decodedToken;
+    next();
+  });
   /*
     IMPLEMENT
 
