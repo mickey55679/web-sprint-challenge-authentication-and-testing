@@ -62,7 +62,7 @@ describe("[POST] /api/auth/register", () => {
   });
 });
 describe("[POST] /api/auth/login", () => {
-  
+
   beforeEach(async () => {
     const user = { username: "Captain Marvel", password: "foobar" };
     await request(server).post("/api/auth/register").send(user);
@@ -99,3 +99,23 @@ describe("[POST] /api/auth/login", () => {
     expect(res.body).toHaveProperty('token')
   });
 });
+
+describe("[GET] /api/jokes", () => {
+  it('restricts invalid users from seeing the jokes', async () => {
+    const noToken = {}
+    const invalidToken = {authorization: 'Bearer invalidtoken'}
+    const expiredToken = {authorization: 'Bearer expiredtoken'}
+
+    const res1 = await request(server).get('/api/jokes').set(noToken);
+    const res2 = await request(server).get('/api/jokes').set(invalidToken);
+    const res3 = await request(server).get('/api/jokes').set(expiredToken);
+
+    expect(res1.status).toBe(401);
+    expect(res1.body).toHaveProperty('message', 'token required');
+    expect(res2.status).toBe(401)
+    expect(res2.body).toHaveProperty('message', 'token invalid');
+    expect(res3.status).toBe(401)
+    expect(res3.body).toHaveProperty('message', 'token invalid')
+
+  })
+})
