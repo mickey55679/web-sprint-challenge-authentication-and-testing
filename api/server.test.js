@@ -34,9 +34,21 @@ describe("[POST] /api/auth/register", () => {
       .send(noPassword);
 
     expect(res1.status).toBe(400);
-    expect(res1.body).toHaveProperty("message", "username and password are required");
+    expect(res1.body).toHaveProperty(
+      "message",
+      "username and password are required"
+    );
 
     expect(res2.status).toBe(400);
-    expect(res2.body).toHaveProperty('message', "username and password are required");
+    expect(res2.body).toHaveProperty(
+      "message",
+      "username and password are required"
+    );
+  });
+  it('should return 400 status and "username taken" message when trying to register with an already taken username', async () => {
+    // step 1: define a user object with a username and password
+    // Step 2: Use supertest to send a POST request to register the user
+    // Step 3: Use supertest to send another POST request with the same user object
+    // Step 4: Assert that the status code is 400 and the error message is "username taken"
   });
 });
