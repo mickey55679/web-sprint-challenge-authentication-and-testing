@@ -62,3 +62,23 @@ describe("[POST] /api/auth/register", () => {
     )
   });
 });
+describe("[POST] /api/auth/login", () => {
+  it('should require a username and password',  async () => {
+    // define two objects 
+    const noUsername = {password: 'foobar' }
+    const noPassword = {username: 'Captain Marvel'}
+    // send requests
+    const res1 = await request(server).post('/api/auth/login').send(noUsername)
+    const res2 = await request(server).post("/api/auth/login").send(noPassword)
+    //Assert
+    expect(res1.status).toBe(400);
+    expect(res1.body).toHaveProperty('message', 'username and password required')
+   
+
+    expect(res2.status).toBe(400);
+    expect(res2.body).toHaveProperty('message', 'username and password required')
+    
+    
+
+  })
+})
