@@ -1,7 +1,7 @@
 const Users = require('./auth-model');
 
 module.exports = {
-validateRegister
+validateRegister,
 }
 async function validateRegister(req, res, next) {
   const { username, password } = req.body;
