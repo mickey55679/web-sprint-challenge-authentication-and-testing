@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { validateRegister } = require("./auth-middleware");
+const { validateRegister, validateRequestBody, authenticateUser, validateLogin } = require("./auth-middleware");
 const bcrypt = require("bcryptjs");
 const Users = require("./auth-model")
 
@@ -44,8 +44,10 @@ router.post("/register", validateRegister, async (req, res) => {
   */
 });
 
-router.post("/login", (req, res) => {
-  res.end("implement login, please!");
+router.post("/login", validateRequestBody, validateLogin, authenticateUser, (req, res) => {
+  const token = Users.generateToken(req.user);
+  res.status(200).json({message: `welcome, ${req.user.username}`, token})
+ 
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
