@@ -10,6 +10,7 @@ module.exports = (req, res, next) => {
   jwt.verify(token, secret, (err, decodedToken) => {
     if (err) {
       // the token is invalid or has expired
+      console.log('jwterror', err)
       return res.status(401).json({ message: "token invalid" });
     }
 

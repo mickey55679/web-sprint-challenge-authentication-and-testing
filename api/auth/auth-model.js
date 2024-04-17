@@ -26,7 +26,7 @@ function generateToken(user) {
     username: user.username,
    
   };
-  const secret = process.env.JWT_SECRET || 'secrectKey123';
+  const secret = process.env.JWT_SECRET || 'secretKey123';
 
 
   const options = {

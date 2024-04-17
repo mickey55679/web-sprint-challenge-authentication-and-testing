@@ -1,6 +1,7 @@
 const request = require("supertest");
 const server = require("./server");
 const db = require("../data/dbConfig");
+const { generateToken } = require("./auth/auth-model");
 
 test("sanity", () => {
   expect(true).toBe(true);
@@ -103,8 +104,8 @@ describe("[POST] /api/auth/login", () => {
 describe("[GET] /api/jokes", () => {
   it('restricts invalid users from seeing the jokes', async () => {
     const noToken = {}
-    const invalidToken = {authorization: 'Bearer invalidtoken'}
-    const expiredToken = {authorization: 'Bearer expiredtoken'}
+    const invalidToken = {authorization: 'invalidtoken'}
+    const expiredToken = {authorization: 'expiredtoken'}
 
     const res1 = await request(server).get('/api/jokes').set(noToken);
     const res2 = await request(server).get('/api/jokes').set(invalidToken);
@@ -118,4 +119,21 @@ describe("[GET] /api/jokes", () => {
     expect(res3.body).toHaveProperty('message', 'token invalid')
 
   })
+ it("allows valid users to see the jokes", async () => {
+   const newUser = { id: 1, username: "testuser", password: "testpass" };
+   await request(server).post("/api/auth/register").send(newUser);
+
+   const res = await request(server).post("/api/auth/login").send(newUser);
+
+   const token = generateToken(newUser);
+   console.log('token message', token)
+
+   const res2 = await request(server)
+     .get("/api/jokes")
+     .set("Authorization", `${token}`);
+     console.log('Status message', res2.status)
+
+   expect(res2.status).toBe(200);
+   expect(Array.isArray(res2.body)).toBe(true);
+ });
 })

@@ -52,7 +52,7 @@ async function validateLogin(req, res, next) {
 
   // If user exists, go to the next middleware or route handler
   req.user = existingUser; 
-  console.log(req.user)
+ 
   next();
 }
 async function authenticateUser(req, res, next) {
